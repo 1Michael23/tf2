@@ -8,8 +8,8 @@ STATE_DIR="/var/lib/tf2server"
 SERVER_CFG="$STATE_DIR/tf2/tf/cfg/server.cfg"
 
 # Stop and disable the systemd service
-sudo systemctl stop "$SERVICE_NAME" >/dev/null 2>&1 || true
-sudo systemctl disable "$SERVICE_NAME" >/dev/null 2>&1 || true
+sudo systemctl stop "tf2server" >/dev/null 2>&1 || true
+sudo systemctl disable "tf2server" >/dev/null 2>&1 || true
 sudo systemctl daemon-reexec >/dev/null 2>&1
 sudo systemctl daemon-reload >/dev/null 2>&1
 
