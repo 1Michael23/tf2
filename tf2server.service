@@ -1,0 +1,23 @@
+[Unit]
+Description=Team Fortress 2 Server
+After=network.target
+
+[Service]
+Type=simple
+User=tf2user
+StateDirectory=tf2server
+WorkingDirectory=/var/lib/tf2server/tf2
+ExecStart=/usr/bin/screen -DmS tf2server /var/lib/tf2server/tf2/srcds_run -game tf +map mge_training_v8_beta4 +sv_pure 1 +maxplayers 24 -console >> /var/lib/tf2server/server-console.log 2>&1
+ExecStop=/usr/bin/screen -S tf2server -p 0 -X stuff "quit^M"
+Restart=on-failure
+RestartSec=10
+
+PrivateTmp=true
+PrivateDevices=true
+DevicePolicy=closed
+ProtectSystem=full
+ProtectHome=true
+MemoryLimit=8G
+
+[Install]
+WantedBy=multi-user.target

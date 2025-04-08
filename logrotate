@@ -1,0 +1,8 @@
+/var/lib/tf2server/tf2/tf/logs/*.log {
+    monthly 
+    rotate 12
+    compress
+    missingok
+    notifempty
+    su tf2user tf2user
+}
