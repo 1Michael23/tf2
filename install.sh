@@ -83,6 +83,10 @@ fi
 chmod +x "$START_SCRIPT_PATH"
 chown $USER:$USER "$START_SCRIPT_PATH"
 
+#Make selinux happy on fedora, no error if not installed
+semanage fcontext -a -t bin_t "/var/lib/tf2server/start.sh" 2>/dev/null || true
+restorecon -v /var/lib/tf2server/start.sh 2>/dev/null || true
+
 SERVER_CFG_PATH="$HL_DIR/tf2/tf/cfg/server.cfg"
 mkdir -p "$(dirname "$SERVER_CFG_PATH")"
 sudo -u $USER tee "$SERVER_CFG_PATH" > /dev/null <<EOF
