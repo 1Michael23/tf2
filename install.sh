@@ -88,7 +88,7 @@ sv_voiceenable 1
 sv_alltalk 1
 
 sv_allowdownload 1
-sv_downloadurl ""
+sv_downloadurl "https://github.com/sapphonie/MGEMod/raw/refs/heads/master/maps/mge_training_v8_beta4b.bsp"
 sv_allowupload 1
 net_maxfilesize 128
 
