@@ -87,6 +87,12 @@ mp_allowspectators 1
 sv_voiceenable 1
 sv_alltalk 1
 
+sv_allowdownload 1
+sv_downloadurl ""
+sv_allowupload 1
+net_maxfilesize 128
+
+
 $RCON_LINE
 EOF
 
