@@ -60,6 +60,29 @@ else
     RCON_LINE="// rcon_password \"Your_Rcon_Password\""
 fi
 
+read -rp "Use sv_setsteamaccount? (y/n): " USE_TOKEN
+
+#install start script
+START_SCRIPT_PATH="$HL_DIR/start.sh"
+
+if [[ "$USE_TOKEN" =~ ^[Yy]$ ]]; then
+    read -rp "Enter Steam Token: " TOKEN
+    sudo -u $USER tee "$START_SCRIPT_PATH" > /dev/null <<EOF
+#!/bin/bash
+cd /var/lib/tf2server/tf2
+exec ./srcds_run -game tf +map mge_training_v8_beta4 +sv_pure 1 +maxplayers 100 -console +sv_setsteamaccount $TOKEN
+EOF
+else
+    sudo -u $USER tee "$START_SCRIPT_PATH" > /dev/null <<EOF
+#!/bin/bash
+cd /var/lib/tf2server/tf2
+exec ./srcds_run -game tf +map mge_training_v8_beta4 +sv_pure 1 +maxplayers 100 -console
+EOF
+fi
+
+chmod +x "$START_SCRIPT_PATH"
+chown $USER:$USER "$START_SCRIPT_PATH"
+
 SERVER_CFG_PATH="$HL_DIR/tf2/tf/cfg/server.cfg"
 mkdir -p "$(dirname "$SERVER_CFG_PATH")"
 sudo -u $USER tee "$SERVER_CFG_PATH" > /dev/null <<EOF
@@ -91,7 +114,7 @@ sv_voiceenable 1
 sv_alltalk 1
 
 sv_allowdownload 1
-sv_downloadurl "https://github.com/sapphonie/MGEMod/raw/refs/heads/master/"
+sv_downloadurl "http://maps.serveme.tf/mge_chillypunch_final4_fix2.bsp"
 sv_allowupload 1
 net_maxfilesize 128
 
