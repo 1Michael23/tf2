@@ -4,6 +4,8 @@ set -e
 USER="tf2user"
 HL_DIR="/var/lib/tf2server"
 STEAMCMD_URL="https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
+METAMOD_URL="https://mms.alliedmods.net/mmsdrop/1.12/mmsource-1.12.0-git1217-linux.tar.gz"
+SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.12/sourcemod-1.12.0-git7196-linux.tar.gz"
 
 DISTRO=$(awk -F= '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 
@@ -14,14 +16,11 @@ fi
 
 install -d -o tf2user -g tf2user -m 0700 /var/lib/tf2server
 
-# Download and install SteamCMD and MGE mod
+# Download and install SteamCMD
 sudo -u $USER bash <<EOF
 cd "$HL_DIR"
-
-# Download and extract SteamCMD
 wget -N "$STEAMCMD_URL"
 tar zxf steamcmd_linux.tar.gz
-
 EOF
 
 # Fedora libcurl fix
@@ -34,8 +33,12 @@ fi
 # Download TF2 server
 sudo -u $USER bash -c "cd $HL_DIR && ./steamcmd.sh +force_install_dir ./tf2 +login anonymous +app_update 232250 +quit"
 
+# Download Metamod and Sourcemod
+sudo -u $USER bash -c "cd $HL_DIR && wget $METAMOD_URL -O metamod.tar.gz && tar xvf metamod.tar.gz --directory=$HL_DIR/tf2/tf/"
+sudo -u $USER bash -c "cd $HL_DIR && wget $SOURCEMOD_URL -O sourcemod.tar.gz && tar xvf sourcemod.tar.gz --directory=$HL_DIR/tf2/tf/"
+
 # Download and install MGE mod
-sudo -u $USER bash -c "cd && wget https://github.com/sapphonie/MGEMod/releases/download/v3.0.9/mge.zip && unzip mge.zip -d $HL_DIR/tf2/tf/"
+sudo -u $USER bash -c "cd && wget https://github.com/sapphonie/MGEMod/releases/download/v3.0.9/mge.zip -O mge.zip && unzip mge.zip -d $HL_DIR/tf2/tf/"
 
 # Symlink steam sdk
 sudo -u tf2user mkdir -p /var/lib/tf2server/.steam/sdk32
@@ -88,7 +91,7 @@ sv_voiceenable 1
 sv_alltalk 1
 
 sv_allowdownload 1
-sv_downloadurl "https://github.com/sapphonie/MGEMod/raw/refs/heads/master/maps/mge_training_v8_beta4b.bsp"
+sv_downloadurl "https://github.com/sapphonie/MGEMod/raw/refs/heads/master/"
 sv_allowupload 1
 net_maxfilesize 128
 

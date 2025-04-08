@@ -19,9 +19,6 @@ sudo systemctl daemon-reload
 # Remove logrotate config
 [ -f "$LOGROTATE_PATH" ] && sudo rm -f "$LOGROTATE_PATH"
 
-# Remove server config file (optional, in case user wants to keep it)
-[ -f "$SERVER_CFG" ] && sudo rm -f "$SERVER_CFG"
-
 # Remove the TF2 state directory
 [ -d "$STATE_DIR" ] && sudo rm -rf "$STATE_DIR"
 
