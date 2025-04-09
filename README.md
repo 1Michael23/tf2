@@ -1,15 +1,5 @@
-# tf2 mge server
+# TF2 MGE Server
 
-Automatic install script for tf2 mge server. Tested on Archlinux and Fedora
+Automatic install script for TF2 MGE. 
 
-c
-
-### Features
-- Automatic install
-- Sandboxed user
-- Log rotation and compression
-- Systemd Service
-
-### Requirements
-- screen
-
+Under development
