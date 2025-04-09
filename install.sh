@@ -70,13 +70,13 @@ if [[ "$USE_TOKEN" =~ ^[Yy]$ ]]; then
     sudo -u $USER tee "$START_SCRIPT_PATH" > /dev/null <<EOF
 #!/bin/bash
 cd /var/lib/tf2server/tf2
-exec ./srcds_run -game tf +map mge_training_v8_beta4 +sv_pure 1 +maxplayers 100 -console +sv_setsteamaccount $TOKEN
+exec ./srcds_run -game tf +map mge_chillypunch_final4_fix2 +sv_pure 1 +maxplayers 100 -console +sv_setsteamaccount $TOKEN
 EOF
 else
     sudo -u $USER tee "$START_SCRIPT_PATH" > /dev/null <<EOF
 #!/bin/bash
 cd /var/lib/tf2server/tf2
-exec ./srcds_run -game tf +map mge_training_v8_beta4 +sv_pure 1 +maxplayers 100 -console
+exec ./srcds_run -game tf +map mge_chillypunch_final4_fix2 +sv_pure 1 +maxplayers 100 -console
 EOF
 fi
 
@@ -85,7 +85,7 @@ chown $USER:$USER "$START_SCRIPT_PATH"
 
 #Make selinux happy on fedora, no error if not installed
 semanage fcontext -a -t bin_t "/var/lib/tf2server/start.sh" 2>/dev/null || true
-restorecon -v /var/lib/tf2server/start.sh 2>/dev/null || true
+restorecon -v /var/lib/tf2server/start.sh 2>/dev/null || truegit 
 
 SERVER_CFG_PATH="$HL_DIR/tf2/tf/cfg/server.cfg"
 mkdir -p "$(dirname "$SERVER_CFG_PATH")"
@@ -118,7 +118,7 @@ sv_voiceenable 1
 sv_alltalk 1
 
 sv_allowdownload 1
-sv_downloadurl "http://maps.serveme.tf/mge_chillypunch_final4_fix2.bsp"
+sv_downloadurl "https://github.com/1Michael23/tf2/raw/refs/heads/master/"
 sv_allowupload 1
 net_maxfilesize 128
 
