@@ -60,41 +60,46 @@ else
     RCON_LINE="// rcon_password \"Your_Rcon_Password\""
 fi
 
+START_SCRIPT_PATH="/var/lib/tf2server/start.sh"
+
+read -rp "Enter map (default: mge_chillypunch_final4_fix2): " MAP
+MAP="${MAP:-mge_chillypunch_final4_fix2}"
+
+read -rp "Enter max players (default: 24): " MAXPLAYERS
+MAXPLAYERS="${MAXPLAYERS:-24}"
+
 read -rp "Use sv_setsteamaccount? (y/n): " USE_TOKEN
-
-#install start script
-START_SCRIPT_PATH="$HL_DIR/start.sh"
-
 if [[ "$USE_TOKEN" =~ ^[Yy]$ ]]; then
     read -rp "Enter Steam Token: " TOKEN
-    sudo -u $USER tee "$START_SCRIPT_PATH" > /dev/null <<EOF
-#!/bin/bash
-cd /var/lib/tf2server/tf2
-exec ./srcds_run -game tf +map mge_chillypunch_final4_fix2 +sv_pure 1 +maxplayers 100 -console +sv_setsteamaccount $TOKEN
-EOF
+    TOKEN_OPTION="+sv_setsteamaccount \"$TOKEN\""
 else
-    sudo -u $USER tee "$START_SCRIPT_PATH" > /dev/null <<EOF
+    TOKEN_OPTION=""
+fi
+
+sudo -u $USER tee "$START_SCRIPT_PATH" > /dev/null <<EOF
 #!/bin/bash
 cd /var/lib/tf2server/tf2
-exec ./srcds_run -game tf +map mge_chillypunch_final4_fix2 +sv_pure 1 +maxplayers 100 -console
+exec ./srcds_run -game tf +map $MAP +sv_pure 1 +maxplayers $MAXPLAYERS -console $TOKEN_OPTION "\$@"
 EOF
-fi
 
 chmod +x "$START_SCRIPT_PATH"
 chown $USER:$USER "$START_SCRIPT_PATH"
 
-#Make selinux happy on fedora, no error if not installed
+#Make selinux happy on fedora, fails silently if no selinux
 semanage fcontext -a -t bin_t "/var/lib/tf2server/start.sh" 2>/dev/null || true
-restorecon -v /var/lib/tf2server/start.sh 2>/dev/null || truegit 
+restorecon -v /var/lib/tf2server/start.sh 2>/dev/null || true
+
+read -rp "Enter server region (default: -1): " REGION
+REGION="${REGION:-1}"
 
 SERVER_CFG_PATH="$HL_DIR/tf2/tf/cfg/server.cfg"
 mkdir -p "$(dirname "$SERVER_CFG_PATH")"
 sudo -u $USER tee "$SERVER_CFG_PATH" > /dev/null <<EOF
 hostname "$SERVER_NAME"
 sv_contact "$ADMIN_EMAIL"
-mp_timelimit "0"
+mp_timelimit 0
 mp_maxrounds 100
-sv_region -1
+sv_region $REGION
 
 sv_rcon_banpenalty 1440
 sv_rcon_maxfailures 5
@@ -117,11 +122,13 @@ mp_allowspectators 1
 sv_voiceenable 1
 sv_alltalk 1
 
+tf_weapon_criticals 0
+tf_use_fixed_weaponspreads 1
+
 sv_allowdownload 1
 sv_downloadurl "https://github.com/1Michael23/tf2/raw/refs/heads/master/"
 sv_allowupload 1
 net_maxfilesize 128
-
 
 $RCON_LINE
 EOF
