@@ -40,6 +40,9 @@ sudo -u $USER bash -c "cd $HL_DIR && wget $SOURCEMOD_URL -O sourcemod.tar.gz && 
 # Download and install MGE mod
 sudo -u $USER bash -c "cd && wget https://github.com/sapphonie/MGEMod/releases/download/v3.0.9/mge.zip -O mge.zip && unzip mge.zip -d $HL_DIR/tf2/tf/"
 
+# Copy custom MGE Spawns config
+sudo -u $USER bash -c "cp mgemod_spawns.cfg $HL_DIR/tf2/tf/addons/sourcemod/configs/"
+
 # Symlink steam sdk
 sudo -u tf2user mkdir -p /var/lib/tf2server/.steam/sdk32
 sudo -u tf2user ln -sf /var/lib/tf2server/linux32/steamclient.so /var/lib/tf2server/.steam/sdk32/steamclient.so
