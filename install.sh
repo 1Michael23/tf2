@@ -3,6 +3,9 @@ set -e
 
 USER="tf2user"
 HL_DIR="/var/lib/tf2server"
+PLUGINS_DIR="$HL_DIR/tf2/tf/addons/sourcemod/plugins"
+
+
 STEAMCMD_URL="https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
 METAMOD_URL="https://mms.alliedmods.net/mmsdrop/1.12/mmsource-1.12.0-git1217-linux.tar.gz"
 SOURCEMOD_URL="https://sm.alliedmods.net/smdrop/1.12/sourcemod-1.12.0-git7196-linux.tar.gz"
@@ -82,7 +85,7 @@ fi
 sudo -u $USER tee "$START_SCRIPT_PATH" > /dev/null <<EOF
 #!/bin/bash
 cd /var/lib/tf2server/tf2
-exec ./srcds_run -game tf +map $MAP +sv_pure 1 +maxplayers $MAXPLAYERS -console $TOKEN_OPTION "\$@"
+exec screen -DmS tf2server ./srcds_run -game tf +map $MAP +sv_pure 1 +maxplayers $MAXPLAYERS -console $TOKEN_OPTION "\$@"
 EOF
 
 chmod +x "$START_SCRIPT_PATH"
@@ -135,6 +138,13 @@ net_maxfilesize 128
 
 $RCON_LINE
 EOF
+
+read -rp "Enter a SteamID to grant admin access (leave blank to skip): " ADMIN_STEAMID
+
+if [[ -n "$ADMIN_STEAMID" ]]; then
+    ADMIN_FILE="$HL_DIR/tf2/tf/addons/sourcemod/configs/admins_simple.ini"
+    echo "\"$ADMIN_STEAMID\" \"99:z\"" | sudo -u $USER tee -a "$ADMIN_FILE" > /dev/null
+fi
 
 # Enable and start service
 sudo systemctl daemon-reexec
